@@ -1,0 +1,54 @@
+plugins {
+    id 'com.android.application'
+}
+
+def buildNumber = (System.getenv("BUILD_NUMBER") ?: "1").toInteger()
+
+android {
+    namespace 'ro.harnagea.carvideo'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "ro.harnagea.carvideo.dash"
+        minSdk 23
+        targetSdk 34
+        versionCode buildNumber
+        versionName "1.0.${buildNumber}"
+    }
+
+    signingConfigs {
+        shared {
+            storeFile file("carvideo.keystore")
+            storeType "pkcs12"
+            storePassword "carvideo"
+            keyAlias "carvideo"
+            keyPassword "carvideo"
+        }
+    }
+
+    buildTypes {
+        debug {
+            if (file("carvideo.keystore").exists()) signingConfig signingConfigs.shared
+        }
+        release {
+            minifyEnabled false
+            // Uses the shared key when present (GitHub build), otherwise Android Studio's debug key.
+            signingConfig file("carvideo.keystore").exists() ? signingConfigs.shared : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    implementation 'androidx.car.app:app:1.4.0'
+    implementation 'androidx.car.app:app-projected:1.4.0'
+}
