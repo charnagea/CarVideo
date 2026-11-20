@@ -6,12 +6,12 @@ def buildNumber = (System.getenv("BUILD_NUMBER") ?: "1").toInteger()
 
 android {
     namespace 'ro.harnagea.carvideo'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "ro.harnagea.carvideo.dash"
         minSdk 23
-        targetSdk 34
+        targetSdk 36
         versionCode buildNumber
         versionName "1.0.${buildNumber}"
     }

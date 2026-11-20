@@ -31,12 +31,13 @@ jobs:
           BUILD_NUMBER: ${{ github.run_number }}
         run: |
           set -o pipefail
-          gradle --no-daemon assembleRelease 2>&1 | tee build.log
+          gradle --no-daemon assembleRelease bundleRelease 2>&1 | tee build.log
 
       - name: Collect APKs
         run: |
           mkdir out
           cp app/build/outputs/apk/release/*.apk "out/CarVideo-Dash-${{ github.run_number }}.apk"
+          cp app/build/outputs/bundle/release/*.aab "out/CarVideo-Dash-${{ github.run_number }}.aab"
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
@@ -44,8 +45,10 @@ jobs:
           tag_name: build-${{ github.run_number }}
           name: Build ${{ github.run_number }}
           body: |
-            Install on your phone. Shows on the car dash via Android Auto, parked only.
-          files: out/*.apk
+            APK: install directly on your phone. AAB: upload to Google Play Console (internal testing).
+          files: |
+            out/*.apk
+            out/*.aab
 
       - name: Save build log on failure
         if: failure()
